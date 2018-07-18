@@ -29,18 +29,19 @@ class environment:
 
 	def startAndEndPoints(self):
 		color = (0, 255, 0)
-		x1 = random.randint(0, int((1/3.0) * self.screenSizeX))
-		y1 = random.randint(0, int(self.screenSizeY))
-		pygame.draw.circle(self.screen, color, (x1,y1), 15, 0)
-		x2 = random.randint(int((2/3.0) * self.screenSizeX), self.screenSizeX)
-		y2 = random.randint(0, int(self.screenSizeY))
-		pygame.draw.circle(self.screen, color, (x2,y2), 15, 0)
-		return x1, y1, x2, y2
+		self.startX = random.randint(0, int((1/3.0) * self.screenSizeX))
+		self.startY = random.randint(0, int(self.screenSizeY))
+		pygame.draw.circle(self.screen, color, (self.startX, self.startY), 15, 0)
+		self.endX = random.randint(int((2/3.0) * self.screenSizeX), self.screenSizeX)
+		self.endY = random.randint(0, int(self.screenSizeY))
+		pygame.draw.circle(self.screen, color, (self.endX, self.endY), 15, 0)
+		#return x1, y1, x2, y2
 
 	def redrawEnv(self):
 		self.screen.fill((255,255,255))
 		color = (0, 255, 0)
 		pygame.draw.circle(self.screen, color, (self.startX, self.startY), 15, 0)
+		pygame.draw.circle(self.screen, color, (self.endX, self.endY), 15, 0)
 		color = (255, 0, 0)
 		for obs in self.obsPositions:
 			pygame.draw.circle(self.screen, color, (obs[0], obs[1]), 15, 0)
@@ -68,7 +69,7 @@ class sampleInPop:
 
 	def obsticleHit(self, env):
 		for obs in env.obsPositions:
-			if(abs(self.x - obs(0)) < 5 and abs(self.y - obs(1)) < 5):
+			if(abs(self.x - obs[0]) < 5 and abs(self.y - obs[1]) < 5):
 				return True
 		return False
 
@@ -91,6 +92,7 @@ populationSamples = []
 #create first population
 for i in range(0, populationSize):
 	populationSamples.append(sampleInPop(e.startX, e.startY, e.screen))
+pygame.display.update()
 
 while(True):
 	# check if game was exited
@@ -106,11 +108,13 @@ while(True):
 			break
 	
 	for i in range(0, newMovesPerPopulation):
-		e.redrawEnv()
+		#e.redrawEnv()
 		for sample in populationSamples:
 			#randomly generate new sample locations until limit of newMovesPerPopulation is reached	
 			sample.moveSample()
 		pygame.display.update()
+
+	# todo remove samples that hit obstacles
 
 	# todo
 	bestSamples = []
@@ -129,7 +133,7 @@ while(True):
 	# rerun simulation with all previously moved points of successful samples
 	for sample in populationSamples:
 		for move in sample.moveList:
-			e.redrawEnv()
+			#e.redrawEnv()
 			sample.x = move[0]
 			sample.y = move[1]
 			sample.displaySample()
