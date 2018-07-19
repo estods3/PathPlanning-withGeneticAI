@@ -9,7 +9,7 @@ class Environment:
 		self.screenSizeY = screenSizeY
 		self.screen = pygame.display.set_mode((self.screenSizeX, self.screenSizeY))
 		self.screen.fill((255,255,255))
-		self.numObstacles = random.randint(0, 5)
+		self.numObstacles = random.randint(0, 10)
 		self.obsPositions = []
 		self.defineStartAndEndPoints()
 		for i in range(0, self.numObstacles):
@@ -37,7 +37,7 @@ class Environment:
 			pygame.draw.circle(self.screen, color, obs, 15, 0)
 		color = (0, 0, 255)
 		for sample in population.samples:
-			pygame.draw.rect(self.screen, color, (sample.x, sample.y, 5, 5), 0)
+			pygame.draw.rect(self.screen, color, (sample.px, sample.py, 5, 5), 0)
 		pygame.display.update()
 			
 	def checkExited(self):
