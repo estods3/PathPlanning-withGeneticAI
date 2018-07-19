@@ -32,24 +32,24 @@ class Sample:
 			#todo
 			self.fitness = 1/16 + 1000/(1)
 		else:
-			self.fitness = 1/((self.px - self.endX)**2 + (self.py - self.endY)**2)
+			self.fitness = 1.0/((self.px - self.endX)**2 + (self.py - self.endY)**2)
 			
 	def obsticleOrWallHit(self, env):
 		for obs in env.obsPositions:
-			if(abs(self.px - obs[0]) < 5 and abs(self.py - obs[1]) < 5):
+			if(abs(self.px - obs[0]) < 15 and abs(self.py - obs[1]) < 15):
 				self.isAlive = False
 		#todo if start point is too close to a wall this could cause an error
 		if(self.px < 5 or self.py < 5 or self.px > env.screenSizeX - 5 or self.py > env.screenSizeY - 5):
 			self.isAlive = False
 
 	def endPointFound(self, env):
-		self.reachedEnd = (abs(self.px - env.endX) < 5 and abs(self.py - env.endY) < 5)
+		self.reachedEnd = (abs(self.px - env.endX) < 15 and abs(self.py - env.endY) < 15)
 		if(self.reachedEnd):
 			self.isAlive = False
 	
 	def procreate(self):
 		baby = Sample(self.startX, self.startY, self.endX, self.endY);
-		baby.genetics = self.genetics
+		baby.genetics = self.genetics.clone()
 		return baby;
 	
 	
@@ -62,7 +62,7 @@ class genetics:
 	def randomize(self, size):
 		for i in range(0, size):
 			f = random.random() * (2*3.14159);
-			self.directions.append([math.cos(f), math.sin(f)]);
+			self.directions.append([math.cos(f), math.sin(f)])
 
 	def clone(self):
 		c = genetics(len(self.directions))
