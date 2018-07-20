@@ -37,7 +37,7 @@ class Environment:
 			pygame.draw.circle(self.screen, color, obs, 15, 0)
 		color = (0, 0, 255)
 		for sample in population.samples:
-			pygame.draw.rect(self.screen, color, (sample.px, sample.py, 5, 5), 0)
+			pygame.draw.rect(self.screen, color, (sample.p[0], sample.p[1], 5, 5), 0)
 		pygame.display.update()
 			
 	def checkExited(self):
