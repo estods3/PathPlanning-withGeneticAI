@@ -3,31 +3,31 @@ from Sample import Sample
 from Population import Population
 from environment import Environment
 
-#Main Program
+################
+# Main Program #
+################
+
 #todo, have environment generate random obstacles or varying shape. have shape have collision impact
 
-
-e = Environment(640, 480)
-p = Population(1000, e)
+env = Environment(1000, 300)
+pop = Population(1000, env)
 
 while(True):
 	# check if game was exited
 	#-------------------------
-	e.checkExited()
+	env.checkExited()
 	
-	#simulate population
+	#Simulate Population
 	#-------------------
-	while p.isNotExtinct():
-		e.checkExited()
-		for sample in p.samples:
+	print("Generation: " + str(pop.generation))
+	while pop.isNotExtinct():
+		env.checkExited()
+		for sample in pop.samples:
 			sample.moveSample()
-		e.redrawEnv(p)
-	#e.redrawEnv(p)
-	
+		env.redrawEnv(pop)
 	pygame.display.update()
-	print(p.generation)
 	
-	#genetic algorithm
+	#Genetic Algorithm
 	#-----------------
-	p.calculateFitnesses()
-	p.performNaturalSelection()
+	pop.calculateFitnesses()
+	pop.performNaturalSelection()

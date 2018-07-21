@@ -20,7 +20,8 @@ class Population:
 	
 	def performNaturalSelection(self):
 		newSamples = []
-		#todo setBestSample()
+		self.calculateFitnesses()
+		#todo setBestSample() (optimizedPath())
 		fitnessSum = 0
 		for sample in self.samples:
 			fitnessSum = fitnessSum + sample.fitness

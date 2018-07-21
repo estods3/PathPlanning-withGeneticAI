@@ -7,19 +7,17 @@ class Sample:
 	def __init__(self, startX, startY, endX, endY):
 		
 		self.isAlive = True
-		self.reachedEnd = False
+		self.reachedEnd = False	#todo pathFound
 		self.startX, self.startY = (startX, startY)
 		self.endX, self.endY = (endX, endY)
 		
 		#Kinematics
 		#todo make a point class: p.x, p.y, p.add, p.color
-		self.p = np.array((self.startX, self.startY))
-		self.v = np.array((0, 0))
-		self.a = np.array((0, 0))
+		self.kinematics = PointMassKinematics(startX, startY)
 				
 		#Genetic Attributes & Decision Making
 		self.fitness = 0
-		self.genetics = genetics(1000)
+		self.genetics = Genetics(1000)
 
 	def moveSample(self):
 		if(self.isAlive):
@@ -59,8 +57,29 @@ class Sample:
 		baby.genetics = self.genetics.clone()
 		return baby;
 	
+class PointMassKinematics:
+	def __init__(self, startX, startY):
+		self.p = Point(startX, startY)
+		self.v = Point(0, 0)
+		self.a = Point(0, 0)
+		self.color = (255, 0, 0)
+
+class Point:
+	def __init__(x, y):
+		self.x = x
+		self.y = y
 	
-class genetics:
+	def add(self, p):
+		self.x = self.x + p.x
+		self.y = self.y + p.y
+	
+	def magnitude(self):
+		mag = sqrt((self.x)**2 + (self.y)**2)
+
+	def distanceToPoint(self, p):
+		return sqrt((self.x - p.x)**2 + (self.y - p.y)**2)
+	
+class Genetics:
 	def __init__(self, size):
 		self.step = 0;
 		self.directions = [];
@@ -72,7 +91,7 @@ class genetics:
 			self.directions.append(np.array((math.cos(f), math.sin(f))))
 
 	def clone(self):
-		c = genetics(len(self.directions))
+		c = Genetics(len(self.directions))
 		c.directions = []
 		for direction in self.directions:
 			c.directions.append(direction)
@@ -85,4 +104,4 @@ class genetics:
 			f = random.random()
 			if (f < mutationRate):
 				f = random.random() * (2*3.14159);
-				direction = [math.cos(f), math.sin(f)]
+				direction = [np.array((math.cos(f), math.sin(f)))]

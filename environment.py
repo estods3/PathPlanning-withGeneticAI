@@ -9,22 +9,23 @@ class Environment:
 		self.screenSizeY = screenSizeY
 		self.screen = pygame.display.set_mode((self.screenSizeX, self.screenSizeY))
 		self.screen.fill((255,255,255))
-		self.numObstacles = random.randint(0, 10)
+		self.numObstacles = random.randint(5, 10)
 		self.obsPositions = []
+		#todo use Point() class to define start and end points
 		self.defineStartAndEndPoints()
 		for i in range(0, self.numObstacles):
 			self.addObstacle()
 
 	def addObstacle(self):
-		x = random.randint(int((1/3.0) * self.screenSizeX), int((2/3.0) * self.screenSizeX - 1))
+		x = random.randint(int((1/4.0) * self.screenSizeX), int((3/4.0) * self.screenSizeX - 1))
 		y = random.randint(0, int(self.screenSizeY - 1))
 		self.obsPositions.append((x,y))
 		return x, y
 
 	def defineStartAndEndPoints(self):
-		self.startX = random.randint(0, int((1/3.0) * self.screenSizeX))
+		self.startX = random.randint(0, int((1/4.0) * self.screenSizeX))
 		self.startY = random.randint(0, int(self.screenSizeY))
-		self.endX = random.randint(int((2/3.0) * self.screenSizeX), self.screenSizeX)
+		self.endX = random.randint(int((3/4.0) * self.screenSizeX), self.screenSizeX)
 		self.endY = random.randint(0, int(self.screenSizeY))
 
 	def redrawEnv(self, population):
