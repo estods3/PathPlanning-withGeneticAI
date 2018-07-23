@@ -61,7 +61,7 @@ class Sample:
 			self.fitness = 1/16 + 10000.0/(self.genetics.step * self.genetics.step)
 			#todo - what if fitness was time-based rather than step based
 		else:
-			self.fitness = 1.0/((self.kinematics.p.x - self.endPoint.x)**2 + (self.kinematics.p.y - self.endPoint.y)**2)
+			self.fitness = 2.0/((self.kinematics.p.x - self.endPoint.x)**2 + (self.kinematics.p.y - self.endPoint.y)**2)
 	
 	def procreate(self):
 		baby = Sample(self.startX, self.startY, self.endPoint.x, self.endPoint.y);
@@ -90,8 +90,6 @@ class PointMassKinematics:
 	
 	def accelerate(self):
 		self.v.add(self.a)
-		if (self.v.magnitude() > 5):
-			self.v = Vector(self.v.x / self.v.magnitude(), self.v.y / self.v.magnitude())
 		self.p.add(self.v)
 
 ##--------------------------------------------------------------------
