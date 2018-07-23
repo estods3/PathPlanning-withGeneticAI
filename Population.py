@@ -1,5 +1,5 @@
 import pygame
-from Sample import Sample, Vector
+from Sample import Sample, Vector, PointMassKinematics
 from environment import Environment
 import random
 
@@ -16,7 +16,6 @@ class Population:
 		
 	def performNaturalSelectionAndReproduction(self):
 		newSamples = []
-		#todo setBestSample() (optimizedPath())
 		fitnessSum = 0
 		bestFitness = -1
 		bestSample = []
@@ -25,16 +24,21 @@ class Population:
 			if(sample.fitness > bestFitness):
 				bestFitness = sample.fitness
 				bestSample = sample
+				self.minStep = sample.genetics.step
 			fitnessSum = fitnessSum + sample.fitness
 		for sample in self.samples:
 			parent = self.selectParent(fitnessSum)
 			baby = parent.procreate()
-			#baby.genetics.mutate()
 			newSamples.append(baby)
-		newSamples[0] = sample
+		
+		bestSample.kinematics = PointMassKinematics(self.env.startX, self.env.startY)
+		bestSample.color = (0, 255, 255)
+		bestSample.pathFound = False
+		bestSample.genetics.step = 0
+		newSamples[0] = bestSample
 		self.samples = newSamples
 		self.generation = self.generation + 1
-			
+		
 	def selectParent(self, fitnessSum):
 		if(fitnessSum <= 0):
 			i = 0
@@ -50,11 +54,6 @@ class Population:
 		if(self.samples == []):
 			return True
 		for sample in self.samples:
-			for obstacle in self.env.obstacles:
-				obstacleOrigin, obstacleRadius = obstacle
-				sample.kinematics.obstacleHit(obstacleOrigin, obstacleRadius)
-			sample.kinematics.endPointFound(Vector(self.env.endX, self.env.endY))
-			sample.kinematics.wallHit(self.env.screenSizeX, self.env.screenSizeY)
-			if(sample.kinematics.isAlive):
+			if(sample.isStillAlive(self.env)):
 				return True		
 		return False

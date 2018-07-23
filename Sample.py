@@ -10,6 +10,7 @@ import numpy as np
 class Sample:
 	def __init__(self, startX, startY, endX, endY):
 		self.pathFound = False
+		self.isAlive = True
 		self.startX, self.startY = (startX, startY)
 		self.color = (0, 0, 255)
 		
@@ -21,19 +22,32 @@ class Sample:
 		self.fitness = 0
 		self.genetics = Genetics(1000)
 
-	def move(self):
-		if(self.kinematics.isAlive):
+	def move(self, env):
+		if(self.isStillAlive(env)):
 			if(len(self.genetics.directions) > self.genetics.step):
 				#randomly move in a given direction
 				self.kinematics.a = self.genetics.directions[self.genetics.step]
 				self.genetics.step = self.genetics.step + 1
 			else:
-				self.kinematics.isAlive = False
+				self.isAlive = False
+			#todo - set isAlive to False for a sample with a step > minStep
 			self.kinematics.accelerate()
+		
+	def isStillAlive(self, env):
+		for obstacle in env.obstacles:
+			obstacleOrigin, obstacleRadius = obstacle
+			if(self.kinematics.obstacleHit(obstacleOrigin, obstacleRadius)):
+				self.isAlive = False
+		if(self.isAlive and self.kinematics.endPointFound(Vector(env.endX, env.endY))):
+			self.isAlive = False
+			self.pathFound = True
+		if(self.isAlive and self.kinematics.wallHit(env.screenSizeX, env.screenSizeY)):
+			self.isAlive = False
+		return self.isAlive
 
 	def calculateFitness(self):
 		if(self.pathFound):
-			self.fitness = 1/16 + 10000/(self.genetics.step * self.genetics.step) #todo
+			self.fitness = 1/16 + 10000.0/(self.genetics.step * self.genetics.step)
 		else:
 			self.fitness = 1.0/((self.kinematics.p.x - self.endPoint.x)**2 + (self.kinematics.p.y - self.endPoint.y)**2)
 	
@@ -47,25 +61,20 @@ class Sample:
 ##---------------------------------------------------------------------------
 class PointMassKinematics:
 	def __init__(self, startX, startY):
-		self.isAlive = True
 		self.p = Vector(startX, startY)
 		self.v = Vector(0, 0)
 		self.a = Vector(0, 0)
 		
 	def obstacleHit(self, obstacleOrigin, obstacleRadius):
-		if(self.p.distanceToPoint(obstacleOrigin) < obstacleRadius):
-			self.isAlive = False
-				
+		return (self.p.distanceToPoint(obstacleOrigin) < obstacleRadius)
+
 	def wallHit(self, wallX, wallY):
 		buffer = 5
-		if((self.p.x < buffer or self.p.x > (wallX - buffer)) or (self.p.y < buffer or self.p.y > (wallY - buffer))):
-			self.isAlive = False
+		return (self.p.x < buffer or self.p.x > (wallX - buffer) or self.p.y < buffer or self.p.y > (wallY - buffer))
 			
 	def endPointFound(self, endPoint):
 		endPointSize = 15 #todo make field in Environment
-		self.pathFound = (self.p.distanceToPoint(endPoint) < endPointSize)
-		if(self.pathFound):
-			self.isAlive = False
+		return (self.p.distanceToPoint(endPoint) < endPointSize)
 	
 	def accelerate(self):
 		self.v.add(self.a)
@@ -97,7 +106,7 @@ class Vector:
 ##----------------------------------------------------------------------------
 class Genetics:
 	def __init__(self, size):
-		self.step = 0;
+		self.step = 0
 		self.directions = []
 		self.randomize(size)
 
@@ -109,7 +118,7 @@ class Genetics:
 	def clone(self):
 		c = Genetics(len(self.directions))
 		c.directions = []
-		mutationRate = 0.1 #unit: % def: chance that any vector in directions gets changed
+		mutationRate = 0.01 #unit: % def: chance that any vector in directions gets changed
 		for direction in self.directions:
 			f = random.random()
 			if (f < mutationRate):

@@ -7,8 +7,6 @@ from environment import Environment
 # Main Program #
 ################
 
-#todo, have environment generate random obstacles or varying shape. have shape have collision impact
-
 env = Environment(1000, 300)
 pop = Population(1000, env)
 
@@ -23,9 +21,8 @@ while(True):
 	while pop.isNotExtinct():
 		env.checkExited()
 		for sample in pop.samples:
-			sample.move()
+			sample.move(env)
 		env.redrawEnv(pop)
-	pygame.display.update()
 	
 	#Genetic Algorithm
 	#-----------------
