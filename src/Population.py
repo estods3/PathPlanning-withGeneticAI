@@ -3,6 +3,10 @@ from Sample import Sample, Vector, PointMassKinematics
 from environment import Environment
 import random
 
+##----------------------------------------------------------------------------------
+## Population: generates random samples, performs natural selection and reproduction
+## for all proceeding generations
+##----------------------------------------------------------------------------------
 class Population:
 	def __init__(self, size, env):
 		self.popSize = size
@@ -31,10 +35,7 @@ class Population:
 			baby = parent.procreate()
 			newSamples.append(baby)
 		
-		bestSample.kinematics = PointMassKinematics(self.env.startX, self.env.startY)
-		bestSample.color = (0, 255, 255)
-		bestSample.pathFound = False
-		bestSample.genetics.step = 0
+		bestSample.setAsBestSample(self.env.startX, self.env.startY)
 		newSamples[0] = bestSample
 		self.samples = newSamples
 		self.generation = self.generation + 1

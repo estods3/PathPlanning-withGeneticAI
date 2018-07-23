@@ -11,6 +11,7 @@ class Sample:
 	def __init__(self, startX, startY, endX, endY):
 		self.pathFound = False
 		self.isAlive = True
+		self.isBest = False
 		self.startX, self.startY = (startX, startY)
 		self.color = (0, 0, 255)
 		
@@ -22,7 +23,7 @@ class Sample:
 		self.fitness = 0
 		self.genetics = Genetics(1000)
 
-	def move(self, env):
+	def move(self, env, minStep):
 		if(self.isStillAlive(env)):
 			if(len(self.genetics.directions) > self.genetics.step):
 				#randomly move in a given direction
@@ -30,7 +31,9 @@ class Sample:
 				self.genetics.step = self.genetics.step + 1
 			else:
 				self.isAlive = False
-			#todo - set isAlive to False for a sample with a step > minStep
+			if(self.genetics.step > minStep):
+				#todo - if a path to the end has been found by a random sample and step > minStep
+				self.isAlive = False
 			self.kinematics.accelerate()
 		
 	def isStillAlive(self, env):
@@ -45,9 +48,18 @@ class Sample:
 			self.isAlive = False
 		return self.isAlive
 
+	def setAsBestSample(self,startX, startY):
+		self.isBest = True
+		self.isAlive = True
+		self.kinematics = PointMassKinematics(startX, startY)
+		self.color = (0, 255, 255)
+		self.pathFound = False
+		self.genetics.resetStep()
+		
 	def calculateFitness(self):
 		if(self.pathFound):
 			self.fitness = 1/16 + 10000.0/(self.genetics.step * self.genetics.step)
+			#todo - what if fitness was time-based rather than step based
 		else:
 			self.fitness = 1.0/((self.kinematics.p.x - self.endPoint.x)**2 + (self.kinematics.p.y - self.endPoint.y)**2)
 	
@@ -115,6 +127,9 @@ class Genetics:
 			f = random.random() * (2*3.14159)
 			self.directions.append(Vector(math.cos(f), math.sin(f)))
 
+	def resetStep(self):
+		self.step = 0
+	
 	def clone(self):
 		c = Genetics(len(self.directions))
 		c.directions = []

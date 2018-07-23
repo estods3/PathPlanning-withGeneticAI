@@ -21,9 +21,10 @@ while(True):
 	while pop.isNotExtinct():
 		env.checkExited()
 		for sample in pop.samples:
-			sample.move(env)
+			sample.move(env, pop.minStep)
 		env.redrawEnv(pop)
 	
 	#Genetic Algorithm
 	#-----------------
 	pop.performNaturalSelectionAndReproduction()
+	env.clearPath()
