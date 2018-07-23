@@ -17,7 +17,6 @@ while(True):
 	
 	#Simulate Population
 	#-------------------
-	print("Generation: " + str(pop.generation))
 	while pop.isNotExtinct():
 		env.checkExited()
 		for sample in pop.samples:

@@ -36,10 +36,14 @@ class Environment:
 		
 	def redrawEnv(self, population):
 		self.screen.fill((255,255,255))
-		color = (0, 255, 0)
+		pygame.font.init()
+		myfont = pygame.font.SysFont('Comic Sans MS', 20)
+		textsurface = myfont.render('Generation: ' + str(population.generation), False, (0, 0, 0))
+		self.screen.blit(textsurface,(0,0))
+		color = (0, 200, 0)
 		pygame.draw.circle(self.screen, color, (self.startX, self.startY), 15, 0)
 		pygame.draw.circle(self.screen, color, (self.endX, self.endY), 15, 0)
-		color = (255, 0, 0)
+		color = (200, 0, 0)
 		for obs in self.obstacles:
 			obsOrigin, size = obs
 			pygame.draw.circle(self.screen, color, (obsOrigin.x, obsOrigin.y), size, 0)
@@ -47,7 +51,7 @@ class Environment:
 			pygame.draw.rect(self.screen, sample.color, (sample.kinematics.p.x, sample.kinematics.p.y, 5, 5), 0)
 			if(sample.isBest):
 				self.linePoints.append((sample.kinematics.p.x, sample.kinematics.p.y))
-				pygame.draw.lines(self.screen, (255, 0, 0), False, self.linePoints, 3)	
+				pygame.draw.lines(self.screen, (0, 0, 200), False, self.linePoints, 3)	
 		pygame.display.update()
 		
 	def clearPath(self):

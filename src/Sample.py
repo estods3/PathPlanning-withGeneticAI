@@ -13,7 +13,7 @@ class Sample:
 		self.isAlive = True
 		self.isBest = False
 		self.startX, self.startY = (startX, startY)
-		self.color = (0, 0, 255)
+		self.color = (100, 100, 100)
 		
 		#Kinematics
 		self.kinematics = PointMassKinematics(startX, startY)
@@ -52,7 +52,7 @@ class Sample:
 		self.isBest = True
 		self.isAlive = True
 		self.kinematics = PointMassKinematics(startX, startY)
-		self.color = (0, 255, 255)
+		self.color = (0, 0, 255)
 		self.pathFound = False
 		self.genetics.resetStep()
 		
