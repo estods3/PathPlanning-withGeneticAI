@@ -1,16 +1,17 @@
 import pygame
 import sys
 import random
+from Sample import Vector
 
 class Environment:
-	def __init__(self, screenSizeX, screenSizeY):
+	def __init__(self, screenWidth, screenHeight):
 		pygame.init()
-		self.screenSizeX = screenSizeX
-		self.screenSizeY = screenSizeY
+		self.screenSizeX, self.screenSizeY = screenWidth, screenHeight
 		self.screen = pygame.display.set_mode((self.screenSizeX, self.screenSizeY))
 		self.screen.fill((255,255,255))
-		self.numObstacles = random.randint(5, 10)
-		self.obsPositions = []
+		#self.numObstacles = random.randint(5, 10)
+		self.numObstacles = 0
+		self.obstacles = []
 		#todo use Point() class to define start and end points
 		self.defineStartAndEndPoints()
 		for i in range(0, self.numObstacles):
@@ -19,7 +20,8 @@ class Environment:
 	def addObstacle(self):
 		x = random.randint(int((1/4.0) * self.screenSizeX), int((3/4.0) * self.screenSizeX - 1))
 		y = random.randint(0, int(self.screenSizeY - 1))
-		self.obsPositions.append((x,y))
+		size = random.randint(15, 30)
+		self.obstacles.append([Vector(x, y), size])
 		return x, y
 
 	def defineStartAndEndPoints(self):
@@ -34,11 +36,11 @@ class Environment:
 		pygame.draw.circle(self.screen, color, (self.startX, self.startY), 15, 0)
 		pygame.draw.circle(self.screen, color, (self.endX, self.endY), 15, 0)
 		color = (255, 0, 0)
-		for obs in self.obsPositions:
-			pygame.draw.circle(self.screen, color, obs, 15, 0)
-		color = (0, 0, 255)
+		for obs in self.obstacles:
+			obsOrigin, size = obs
+			pygame.draw.circle(self.screen, color, (obsOrigin.x, obsOrigin.y), size, 0)
 		for sample in population.samples:
-			pygame.draw.rect(self.screen, color, (sample.p[0], sample.p[1], 5, 5), 0)
+			pygame.draw.rect(self.screen, sample.color, (sample.kinematics.p.x, sample.kinematics.p.y, 5, 5), 0)
 		pygame.display.update()
 			
 	def checkExited(self):

@@ -23,11 +23,10 @@ while(True):
 	while pop.isNotExtinct():
 		env.checkExited()
 		for sample in pop.samples:
-			sample.moveSample()
+			sample.move()
 		env.redrawEnv(pop)
 	pygame.display.update()
 	
 	#Genetic Algorithm
 	#-----------------
-	pop.calculateFitnesses()
-	pop.performNaturalSelection()
+	pop.performNaturalSelectionAndReproduction()
