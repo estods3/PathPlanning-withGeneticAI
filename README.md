@@ -4,11 +4,9 @@ After watching a Youtube video (link below) on Genetic AI algorithms, I thought 
 
 This simulation is a useful demonstration for genetic AI's applications in autonomous vehicles or robotics. If you have enough computing power, you could use this to create a coordinate trajectory for your vehicle to navigate around an obstacle.
 
-Example:
+## Example:
 
-run the program by the following:
-
-python src/runSimulation.py
+run the program by the following: `python src/runSimulation.py`
 
 A window will appear with a random collection of obstacles and start and end point on either side of the screen. "Samples" from the population will begin to travel in random directions based on their randomized genetics that are hard-coded into them at the start of the simulation.
 ![Alt text](/pics/gen3.PNG?raw=true "After 3 Generations")
@@ -21,6 +19,6 @@ If all goes well, the samples will not only find the end point, but optimize the
 
 
 
-##Resources:
+## Resources:
 https://www.youtube.com/watch?v=BOZfhUcNiqk
 https://github.com/Code-Bullet/Smart-Dots-Genetic-Algorithm-Tutorial
