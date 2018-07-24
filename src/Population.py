@@ -43,7 +43,7 @@ class Population:
 			baby = parent.procreate(self.env.startPoint)
 			nextGeneration.append(baby)
 		
-		fittestSample.setAsBestSample(self.env.startPoint)
+		fittestSample.setAsFittestSample(self.env.startPoint)
 		nextGeneration[0] = fittestSample
 		self.samples = nextGeneration
 		self.generation = self.generation + 1

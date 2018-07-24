@@ -11,7 +11,7 @@ class Sample:
 	def __init__(self, startPoint):
 		self.pathFound = False
 		self.isAlive = True
-		self.isBest = False
+		self.isFittest = False
 		self.color = (100, 100, 100)
 		
 		#Kinematics
@@ -21,6 +21,7 @@ class Sample:
 		self.fitness = 0
 		self.genetics = Genetics(1000)
 
+	# Takes the next decision in self.genetics.decisionMakingGenes
 	def makeADecision(self, env, numStepsInCurrentOptimumPath):
 		if(self.isStillAlive(env)):
 			if(len(self.genetics.decisionMakingGenes) > self.genetics.decisionsMade):
@@ -32,7 +33,8 @@ class Sample:
 			if(self.genetics.decisionsMade > numStepsInCurrentOptimumPath):
 				self.isAlive = False
 			self.kinematics.accelerate()
-		
+	
+	# check if sample is still alive based on the environment
 	def isStillAlive(self, env):
 		for obstacle in env.obstacles:
 			obstacleOrigin, obstacleRadius = obstacle
@@ -45,22 +47,25 @@ class Sample:
 			self.isAlive = False
 		return self.isAlive
 
-	def setAsBestSample(self, startPoint):
-		self.isBest = True
+	# Sets the sample as the fittest sample, so it can be placed directly into the next generation
+	# thanks to Code-Bullet: https://github.com/Code-Bullet/Smart-Dots-Genetic-Algorithm-Tutorial for the algorithm
+	def setAsFittestSample(self, startPoint):
+		self.isFittest = True
 		self.isAlive = True
 		self.kinematics = PointMassKinematics(startPoint)
 		self.color = (0, 0, 255)
 		self.pathFound = False
 		self.genetics.resetDecisions()
 	
-	# thanks to Code-Bullet: https://github.com/Code-Bullet/Smart-Dots-Genetic-Algorithm-Tutorial
-	# for the algorithm
+	# Calculates the fitness for the sample based on either 1) if it found a path 2) how close it was if it didn't
+	# thanks to Code-Bullet: https://github.com/Code-Bullet/Smart-Dots-Genetic-Algorithm-Tutorial for the algorithm
 	def calculateFitness(self, endPoint):
 		if(self.pathFound):
 			self.fitness = 1/16 + 10000.0/((self.genetics.decisionsMade)**2)
 		else:
 			self.fitness = 2.0/((self.kinematics.p.x - endPoint.x)**2 + (self.kinematics.p.y - endPoint.y)**2)
 	
+	# create a new sample with mutated genetics from the sample
 	def procreate(self, startPoint):
 		baby = Sample(startPoint);
 		baby.genetics = self.genetics.clone()
@@ -83,7 +88,7 @@ class PointMassKinematics:
 		return (self.p.x < buffer or self.p.x > (wallX - buffer) or self.p.y < buffer or self.p.y > (wallY - buffer))
 			
 	def endPointFound(self, endPoint):
-		endPointSize = 15 #todo make field in Environment
+		endPointSize = 15
 		return (self.p.distanceToPoint(endPoint) < endPointSize)
 	
 	def accelerate(self):
