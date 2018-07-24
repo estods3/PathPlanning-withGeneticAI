@@ -6,7 +6,8 @@ This simulation is a useful demonstration for genetic AI's applications in auton
 
 ## Example:
 
-run the program by the following: `python src/runSimulation.py`
+Clone or download the code and navigate to its directory in a terminal.
+Run the program by typing the following in a terminal: `python src/runSimulation.py`
 
 A window will appear with a random collection of obstacles and start and end point on either side of the screen. "Samples" from the population will begin to travel in random directions based on their randomized genetics that are hard-coded into them at the start of the simulation.
 ![Alt text](/pics/gen3.PNG?raw=true "After 3 Generations")
