@@ -7,7 +7,7 @@ This simulation is a useful demonstration for genetic AI's applications in auton
 ## System Requirements
 
 You will need Python 3 to run this program. I tested it with Python 3.6.5 64 bit.
-You will also need a few Python modules. You can install these by typing 'pip install -r requirements.txt' in your cloned directory of this repository.
+You will also need a few Python modules. You can install these by typing `pip install -r requirements.txt` in your cloned directory of this repository.
 
 ## Example:
 
