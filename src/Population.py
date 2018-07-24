@@ -11,35 +11,46 @@ class Population:
 	def __init__(self, size, env):
 		self.popSize = size
 		self.env = env
-		self.generation = 1
-		self.fitnessSum = 0
-		self.minStep = 1000
+		self.numStepsInCurrentOptimumPath = 1000
+		
+		# Create Generation 1 Samples
 		self.samples = []
+		self.generation = 1
 		for i in range(0, self.popSize):
-			self.samples.append(Sample(self.env.startX, self.env.startY, self.env.endX, self.env.endY))
-		
+			self.samples.append(Sample(self.env.startPoint))
+	
+	def moveSamples(self):
+		for sample in self.samples:
+			sample.move(self.env, self.numStepsInCurrentOptimumPath)
+	
+	# randomly (naturally) choses parents for the next generation of samples
+	# the samples are clones from their parents, but will the occasional mutation
 	def performNaturalSelectionAndReproduction(self):
-		newSamples = []
-		fitnessSum = 0
-		bestFitness = -1
-		bestSample = []
+		nextGeneration = []
+		populationFitnessSum = 0
+		fittestSample_fitness = -1
+		fittestSample = []
 		for sample in self.samples:
-			sample.calculateFitness()
-			if(sample.fitness > bestFitness):
-				bestFitness = sample.fitness
-				bestSample = sample
-				self.minStep = sample.genetics.step
-			fitnessSum = fitnessSum + sample.fitness
+			sample.calculateFitness(self.env.endPoint)
+			if(sample.fitness > fittestSample_fitness):
+				fittestSample_fitness = sample.fitness
+				fittestSample = sample
+				self.numStepsInCurrentOptimumPath = sample.genetics.step
+			populationFitnessSum = populationFitnessSum + sample.fitness
 		for sample in self.samples:
-			parent = self.selectParent(fitnessSum)
-			baby = parent.procreate()
-			newSamples.append(baby)
+			parent = self.selectParent(populationFitnessSum)
+			baby = parent.procreate(self.env.startPoint)
+			nextGeneration.append(baby)
 		
-		bestSample.setAsBestSample(self.env.startX, self.env.startY)
-		newSamples[0] = bestSample
-		self.samples = newSamples
+		fittestSample.setAsBestSample(self.env.startPoint)
+		nextGeneration[0] = fittestSample
+		self.samples = nextGeneration
 		self.generation = self.generation + 1
-		
+	
+	# Returns a random sample based on the fitnesses of each sample in the population
+	# samples that have a higher fitness are more likely to be chosen as parents
+	# thanks to Code-Bullet: https://github.com/Code-Bullet/Smart-Dots-Genetic-Algorithm-Tutorial
+	# for the algorithm
 	def selectParent(self, fitnessSum):
 		if(fitnessSum <= 0):
 			i = 0
@@ -50,7 +61,8 @@ class Population:
 			runningSum = runningSum + sample.fitness
 			if(runningSum > i):
 				return sample
-		
+	
+	# determines if the population is still running a simulation (True)
 	def isNotExtinct(self):
 		if(self.samples == []):
 			return True

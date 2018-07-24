@@ -8,30 +8,28 @@ import numpy as np
 ## the Sample has Genetics (random decision-making) and PointMassKinematics (to move about the Environment)
 ##---------------------------------------------------------------------------------------------------------
 class Sample:
-	def __init__(self, startX, startY, endX, endY):
+	def __init__(self, startPoint):
 		self.pathFound = False
 		self.isAlive = True
 		self.isBest = False
-		self.startX, self.startY = (startX, startY)
 		self.color = (100, 100, 100)
 		
 		#Kinematics
-		self.kinematics = PointMassKinematics(startX, startY)
-		self.endPoint = Vector(endX, endY) #does this need to be known by a sample? its the same for all samples in a pop
+		self.kinematics = PointMassKinematics(startPoint)
 		
 		#Genetic Attributes & Decision Making
 		self.fitness = 0
 		self.genetics = Genetics(1000)
 
-	def move(self, env, minStep):
+	def move(self, env, numStepsInCurrentOptimumPath):
 		if(self.isStillAlive(env)):
-			if(len(self.genetics.directions) > self.genetics.step):
+			if(len(self.genetics.decisionMakingGenes) > self.genetics.step):
 				#randomly move in a given direction
-				self.kinematics.a = self.genetics.directions[self.genetics.step]
+				self.kinematics.a = self.genetics.decisionMakingGenes[self.genetics.step]
 				self.genetics.step = self.genetics.step + 1
 			else:
 				self.isAlive = False
-			if(self.genetics.step > minStep):
+			if(self.genetics.step > numStepsInCurrentOptimumPath):
 				#todo - if a path to the end has been found by a random sample and step > minStep
 				self.isAlive = False
 			self.kinematics.accelerate()
@@ -41,30 +39,31 @@ class Sample:
 			obstacleOrigin, obstacleRadius = obstacle
 			if(self.kinematics.obstacleHit(obstacleOrigin, obstacleRadius)):
 				self.isAlive = False
-		if(self.isAlive and self.kinematics.endPointFound(Vector(env.endX, env.endY))):
+		if(self.isAlive and self.kinematics.endPointFound(env.endPoint)):
 			self.isAlive = False
 			self.pathFound = True
 		if(self.isAlive and self.kinematics.wallHit(env.screenSizeX, env.screenSizeY)):
 			self.isAlive = False
 		return self.isAlive
 
-	def setAsBestSample(self,startX, startY):
+	def setAsBestSample(self, startPoint):
 		self.isBest = True
 		self.isAlive = True
-		self.kinematics = PointMassKinematics(startX, startY)
+		self.kinematics = PointMassKinematics(startPoint)
 		self.color = (0, 0, 255)
 		self.pathFound = False
 		self.genetics.resetStep()
-		
-	def calculateFitness(self):
+	
+	# thanks to Code-Bullet: https://github.com/Code-Bullet/Smart-Dots-Genetic-Algorithm-Tutorial
+	# for the algorithm
+	def calculateFitness(self, endPoint):
 		if(self.pathFound):
 			self.fitness = 1/16 + 10000.0/(self.genetics.step * self.genetics.step)
-			#todo - what if fitness was time-based rather than step based
 		else:
-			self.fitness = 2.0/((self.kinematics.p.x - self.endPoint.x)**2 + (self.kinematics.p.y - self.endPoint.y)**2)
+			self.fitness = 2.0/((self.kinematics.p.x - endPoint.x)**2 + (self.kinematics.p.y - endPoint.y)**2)
 	
-	def procreate(self):
-		baby = Sample(self.startX, self.startY, self.endPoint.x, self.endPoint.y);
+	def procreate(self, startPoint):
+		baby = Sample(startPoint);
 		baby.genetics = self.genetics.clone()
 		return baby;
 
@@ -72,8 +71,8 @@ class Sample:
 ## Point Mass Kinematics: Models how a Sample interacts with it's Environment
 ##---------------------------------------------------------------------------
 class PointMassKinematics:
-	def __init__(self, startX, startY):
-		self.p = Vector(startX, startY)
+	def __init__(self, startPoint):
+		self.p = Vector(startPoint.x, startPoint.y)
 		self.v = Vector(0, 0)
 		self.a = Vector(0, 0)
 		
@@ -117,26 +116,30 @@ class Vector:
 class Genetics:
 	def __init__(self, size):
 		self.step = 0
-		self.directions = []
+		self.decisionMakingGenes = []
 		self.randomize(size)
 
+	# thanks to Code-Bullet: https://github.com/Code-Bullet/Smart-Dots-Genetic-Algorithm-Tutorial
+	# for the algorithm
 	def randomize(self, size):
 		for i in range(size):
 			f = random.random() * (2*3.14159)
-			self.directions.append(Vector(math.cos(f), math.sin(f)))
+			self.decisionMakingGenes.append(Vector(math.cos(f), math.sin(f)))
 
 	def resetStep(self):
 		self.step = 0
 	
+	# thanks to Code-Bullet: https://github.com/Code-Bullet/Smart-Dots-Genetic-Algorithm-Tutorial
+	# for the algorithm
 	def clone(self):
-		c = Genetics(len(self.directions))
-		c.directions = []
-		mutationRate = 0.01 #unit: % def: chance that any vector in directions gets changed
-		for direction in self.directions:
+		c = Genetics(len(self.decisionMakingGenes))
+		c.decisionMakingGenes = []
+		mutationRate = 0.01 #unit: % def: chance that any vector in decisionMakingGenes gets changed
+		for decision in self.decisionMakingGenes:
 			f = random.random()
 			if (f < mutationRate):
 				f = random.random() * (2*3.14159)
-				c.directions.append(Vector(math.cos(f), math.sin(f)))
+				c.decisionMakingGenes.append(Vector(math.cos(f), math.sin(f)))
 			else:
-				c.directions.append(direction)
+				c.decisionMakingGenes.append(decision)
 		return c;
