@@ -19,9 +19,10 @@ class Population:
 		for i in range(0, self.popSize):
 			self.samples.append(Sample(self.env.startPoint))
 	
+	# each sample makes the next decision
 	def moveSamples(self):
 		for sample in self.samples:
-			sample.move(self.env, self.numStepsInCurrentOptimumPath)
+			sample.makeADecision(self.env, self.numStepsInCurrentOptimumPath)
 	
 	# randomly (naturally) choses parents for the next generation of samples
 	# the samples are clones from their parents, but will the occasional mutation
@@ -35,7 +36,7 @@ class Population:
 			if(sample.fitness > fittestSample_fitness):
 				fittestSample_fitness = sample.fitness
 				fittestSample = sample
-				self.numStepsInCurrentOptimumPath = sample.genetics.step
+				self.numStepsInCurrentOptimumPath = sample.genetics.decisionsMade
 			populationFitnessSum = populationFitnessSum + sample.fitness
 		for sample in self.samples:
 			parent = self.selectParent(populationFitnessSum)

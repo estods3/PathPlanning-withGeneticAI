@@ -21,16 +21,15 @@ class Sample:
 		self.fitness = 0
 		self.genetics = Genetics(1000)
 
-	def move(self, env, numStepsInCurrentOptimumPath):
+	def makeADecision(self, env, numStepsInCurrentOptimumPath):
 		if(self.isStillAlive(env)):
-			if(len(self.genetics.decisionMakingGenes) > self.genetics.step):
-				#randomly move in a given direction
-				self.kinematics.a = self.genetics.decisionMakingGenes[self.genetics.step]
-				self.genetics.step = self.genetics.step + 1
+			if(len(self.genetics.decisionMakingGenes) > self.genetics.decisionsMade):
+				#randomly move in a given direction made by the decision making genetics
+				self.kinematics.a = self.genetics.decisionMakingGenes[self.genetics.decisionsMade]
+				self.genetics.decisionsMade = self.genetics.decisionsMade + 1
 			else:
 				self.isAlive = False
-			if(self.genetics.step > numStepsInCurrentOptimumPath):
-				#todo - if a path to the end has been found by a random sample and step > minStep
+			if(self.genetics.decisionsMade > numStepsInCurrentOptimumPath):
 				self.isAlive = False
 			self.kinematics.accelerate()
 		
@@ -52,13 +51,13 @@ class Sample:
 		self.kinematics = PointMassKinematics(startPoint)
 		self.color = (0, 0, 255)
 		self.pathFound = False
-		self.genetics.resetStep()
+		self.genetics.resetDecisions()
 	
 	# thanks to Code-Bullet: https://github.com/Code-Bullet/Smart-Dots-Genetic-Algorithm-Tutorial
 	# for the algorithm
 	def calculateFitness(self, endPoint):
 		if(self.pathFound):
-			self.fitness = 1/16 + 10000.0/(self.genetics.step * self.genetics.step)
+			self.fitness = 1/16 + 10000.0/((self.genetics.decisionsMade)**2)
 		else:
 			self.fitness = 2.0/((self.kinematics.p.x - endPoint.x)**2 + (self.kinematics.p.y - endPoint.y)**2)
 	
@@ -115,10 +114,11 @@ class Vector:
 ##----------------------------------------------------------------------------
 class Genetics:
 	def __init__(self, size):
-		self.step = 0
+		self.decisionsMade = 0
 		self.decisionMakingGenes = []
 		self.randomize(size)
 
+	# randomizes unit vectors for each gene in the genetics
 	# thanks to Code-Bullet: https://github.com/Code-Bullet/Smart-Dots-Genetic-Algorithm-Tutorial
 	# for the algorithm
 	def randomize(self, size):
@@ -126,9 +126,11 @@ class Genetics:
 			f = random.random() * (2*3.14159)
 			self.decisionMakingGenes.append(Vector(math.cos(f), math.sin(f)))
 
-	def resetStep(self):
-		self.step = 0
+	# resets the decisions for the next decision
+	def resetDecisions(self):
+		self.decisionsMade = 0
 	
+	# clones the genetics of a sample but with occasional mutations
 	# thanks to Code-Bullet: https://github.com/Code-Bullet/Smart-Dots-Genetic-Algorithm-Tutorial
 	# for the algorithm
 	def clone(self):
