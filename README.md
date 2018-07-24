@@ -21,5 +21,5 @@ If all goes well, the samples will not only find the end point, but optimize the
 
 
 ## Resources:
-https://www.youtube.com/watch?v=BOZfhUcNiqk
+https://www.youtube.com/watch?v=BOZfhUcNiqk  
 https://github.com/Code-Bullet/Smart-Dots-Genetic-Algorithm-Tutorial
