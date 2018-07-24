@@ -4,6 +4,11 @@ After watching a Youtube video (link below) on Genetic AI algorithms, I thought 
 
 This simulation is a useful demonstration for genetic AI's applications in autonomous vehicles or robotics. If you have enough computing power, you could use this to create a coordinate trajectory for your vehicle to navigate around an obstacle.
 
+## System Requirements
+
+You will need Python 3 to run this program. I tested it with Python 3.6.5 64 bit.
+You will also need a few Python modules. You can install these by typing 'pip install -r requirements.txt' in your cloned directory of this repository.
+
 ## Example:
 
 Clone or download the code and navigate to its directory in a terminal.
