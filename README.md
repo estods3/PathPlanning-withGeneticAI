@@ -14,7 +14,7 @@ You will also need a few Python modules. You can install these by typing `pip in
 Clone or download the code and navigate to its directory in a terminal.
 Run the program by typing the following in a terminal: `python src/runSimulation.py`
 
-A window will appear with a random collection of obstacles and start and end point on either side of the screen. "Samples" from the population will begin to travel in random directions based on their randomized genetics that are hard-coded into them at the start of the simulation.
+A window will appear with a random collection of obstacles and start and end points on either side of the screen. "Samples" from the population will begin to travel in random directions based on their randomized genetics that are hard-coded into them at the start of the simulation.
 ![Alt text](/pics/gen3.PNG?raw=true "After 3 Generations")
 
 Some samples may make it closer to the end point than others, which will give them a higher fitness score, which is a reproductive advantage when the next generation is produced. The samples with the highest fitness scores are more likely to be naturally selected as parents. Their children samples will be cloned with the same genetics as their parents, but with random mutations which allow them to potentially outperform their parents and reach the end point.
