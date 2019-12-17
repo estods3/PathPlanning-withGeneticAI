@@ -7,12 +7,18 @@ This simulation is a useful demonstration for genetic AI's applications in auton
 ## System Requirements
 
 You will need Python to run this program. I tested it with Python 2.7.15+ 64 bit.
-You will also need a few Python modules. You can install these by typing `pip install -r requirements.txt` in your cloned directory of this repository.
+You will also need a few Python modules. You can install these by typing 
+
+`pip install -r requirements.txt` 
+
+in your cloned directory of this repository.
 
 ## Example:
 
 Clone or download the code and navigate to its directory in a terminal.
-Run the program by typing the following in a terminal: `python src/runSimulation.py`
+Run the program by typing the following in a terminal: 
+
+`python src/runSimulation.py`
 
 A window will appear with a random collection of obstacles and start and end points on either side of the screen. "Samples" from the population will begin to travel in random directions based on their randomized genetics that are hard-coded into them at the start of the simulation.
 ![Alt text](/pics/gen3.PNG?raw=true "After 3 Generations")
