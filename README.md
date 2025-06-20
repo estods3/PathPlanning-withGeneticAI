@@ -2,7 +2,7 @@
 
 This simulation is a useful demonstration for genetic AI's applications in autonomous vehicles or robotics. If you have enough computing power, you could use this to create a coordinate trajectory for your vehicle to navigate around an obstacle.
 
-[<img src="https://github.com/estods3/PathPlanning-withGeneticAI/blob/master/pics/pathplanning.gif" title="Path Planning Algorithm" alt="drawing" width="800"/>]
+<img src="https://github.com/estods3/PathPlanning-withGeneticAI/blob/master/pics/pathplanning.gif" title="Path Planning Algorithm" alt="drawing" width="800"/>
 
 ## System Requirements
 
